@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>서울 벚꽃 명소 지도</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link
+    rel="stylesheet"
+    href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""
+  />
+  <style>
+    :root {
+      --bg1: #fff3fa;
+      --bg2: #ffe8f3;
+      --bg3: #ffd8ea;
+      --ink: #63324e;
+      --accent: #e76ba3;
+      --accent-2: #ff90b7;
+      --soft-line: rgba(231, 107, 163, 0.28);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans KR", "Noto Sans Korean", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 15% 10%, #ffffff 0%, transparent 35%),
+        radial-gradient(circle at 85% 15%, #ffe2ef 0%, transparent 35%),
+        linear-gradient(165deg, var(--bg1) 0%, var(--bg2) 50%, var(--bg3) 100%);
+      overflow-x: hidden;
+    }
+
+    .page {
+      position: relative;
+      min-height: 100vh;
+      padding: 28px 18px 40px;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto;
+      justify-items: center;
+      gap: 20px;
+      isolation: isolate;
+    }
+
+    .title {
+      text-align: center;
+      max-width: 900px;
+    }
+
+    .title h1 {
+      margin: 0 0 8px;
+      font-size: clamp(1.8rem, 4.1vw, 3rem);
+      letter-spacing: 0.01em;
+      color: #b73a77;
+    }
+
+    .title p {
+      margin: 0;
+      font-size: clamp(0.95rem, 1.7vw, 1.08rem);
+      color: #844862;
+      line-height: 1.6;
+    }
+
+    .hint {
+      margin-top: 6px;
+      font-size: 0.9rem;
+      color: #a14f76;
+      background: rgba(255, 255, 255, 0.65);
+      border: 1px solid var(--soft-line);
+      border-radius: 999px;
+      padding: 8px 14px;
+      backdrop-filter: blur(2px);
+    }
+
+    .map-wrap {
+      margin-top: 6px;
+      width: min(980px, 95vw);
+      height: min(66vh, 640px);
+      min-height: 460px;
+      border-radius: 26px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid rgba(231, 107, 163, 0.34);
+      box-shadow:
+        0 22px 44px rgba(180, 75, 130, 0.2),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.45);
+      background:
+        linear-gradient(rgba(255, 255, 255, 0.35), rgba(255, 255, 255, 0.35)),
+        radial-gradient(circle at 20% 25%, #fff6fb 0, #ffe8f3 38%, #ffd9ea 100%);
+    }
+
+    .map-inner {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .map-caption {
+      position: absolute;
+      top: 28px;
+      left: 36px;
+      z-index: 450;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 252, 254, 0.92);
+      border: 1px solid rgba(217, 85, 143, 0.35);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #8a3560;
+      letter-spacing: 0.01em;
+    }
+
+    #seoulRealMap {
+      width: min(95%, 900px);
+      height: 100%;
+      min-height: 390px;
+      border-radius: 16px;
+      box-shadow: 0 14px 26px rgba(174, 69, 122, 0.2);
+      border: 1px solid rgba(212, 108, 160, 0.35);
+      overflow: hidden;
+    }
+
+    .leaflet-popup-content-wrapper {
+      border-radius: 12px;
+    }
+
+    .place-popup {
+      font-size: 0.85rem;
+      line-height: 1.45;
+      color: #7a2e54;
+      margin: 0;
+    }
+
+    .place-popup strong {
+      color: #9e3f6b;
+    }
+
+    .spot-list {
+      width: min(980px, 95vw);
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .spot-card {
+      min-height: 360px;
+      background: rgba(255, 255, 255, 0.72);
+      border: 1px solid var(--soft-line);
+      border-radius: 14px;
+      padding: 14px 14px 12px;
+      color: #80435f;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 6px;
+      text-align: center;
+      box-shadow: 0 8px 18px rgba(195, 79, 132, 0.12);
+      scroll-margin-top: 24px;
+      cursor: pointer;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .spot-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 14px 24px rgba(195, 79, 132, 0.18);
+    }
+
+    .spot-card h3 {
+      margin: 0;
+      font-size: 1rem;
+      color: #9e3f6b;
+    }
+
+    .spot-card p {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.45;
+    }
+
+    .spot-card-media {
+      margin-top: auto;
+      padding-top: 10px;
+    }
+
+    .spot-card-media img {
+      width: 100%;
+      height: 170px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid rgba(194, 88, 141, 0.3);
+      display: block;
+    }
+
+    .petal-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .petal {
+      position: absolute;
+      top: -12vh;
+      width: var(--size);
+      height: calc(var(--size) * 0.72);
+      border-radius: 70% 30% 70% 35%;
+      background: radial-gradient(circle at 28% 35%, rgba(255, 255, 255, 0.9), rgba(255, 177, 210, 0.88) 70%);
+      opacity: 0.72;
+      transform: translateX(0) rotate(0deg);
+      animation: fall linear infinite;
+      animation-duration: var(--dur);
+      animation-delay: var(--delay);
+    }
+
+    @keyframes fall {
+      0% {
+        transform: translate3d(0, -12vh, 0) rotate(0deg);
+        opacity: 0;
+      }
+      10% {
+        opacity: 0.84;
+      }
+      100% {
+        transform: translate3d(var(--drift), 112vh, 0) rotate(540deg);
+        opacity: 0;
+      }
+    }
+
+    @media (max-width: 840px) {
+      .spot-list {
+        grid-template-columns: repeat(2, minmax(160px, 1fr));
+      }
+      .map-wrap {
+        min-height: 420px;
+      }
+      .label {
+        font-size: 0.78rem;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .spot-list {
+        grid-template-columns: 1fr;
+      }
+      .map-wrap {
+        min-height: 390px;
+      }
+      .hint {
+        border-radius: 14px;
+        text-align: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="petal-layer" id="petalLayer" aria-hidden="true"></div>
+
+  <div class="page">
+    <header class="title">
+      <h1>서울 벚꽃 명소 지도</h1>
+      <p class="hint">경복궁 · 남산타워 · 여의도 · 어린이대공원 · 서울숲 · 잠실 석촌호수</p>
+    </header>
+
+    <main class="map-wrap" id="mapWrap" aria-label="서울 지도 영역">
+      <div class="map-caption">서울 벚꽃 대표 명소</div>
+      <div class="map-inner">
+        <div id="seoulRealMap" aria-label="서울 실제 지도"></div>
+      </div>
+    </main>
+
+    <section class="spot-list" aria-label="벚꽃 명소 안내 카드">
+      <article class="spot-card" id="card-gyeongbokgung" data-detail-url="gyeongbokgung-detail.html">
+        <h3>경복궁</h3>
+        <p>고궁의 고즈넉한 분위기와 벚꽃이 함께 어우러지는 서울 대표 명소</p>
+        <div class="spot-card-media">
+          <img src="file:///C:/Users/user/.cursor/projects/c-cursor-Myprojects/assets/c__Users_user_AppData_Roaming_Cursor_User_workspaceStorage_cbc4cad9ca328f5721e588f24157f418_images____-80fdd693-58c3-4900-97b0-c77bba116cd9.png" alt="경복궁 벚꽃 풍경" />
+        </div>
+      </article>
+      <article class="spot-card" id="card-namsan" data-detail-url="namsan-detail.html">
+        <h3>남산타워</h3>
+        <p>남산 산책로를 따라 벚꽃을 즐기고 전망대에서 서울 전경까지 감상</p>
+        <div class="spot-card-media">
+          <img src="file:///C:/Users/user/.cursor/projects/c-cursor-Myprojects/assets/c__Users_user_AppData_Roaming_Cursor_User_workspaceStorage_cbc4cad9ca328f5721e588f24157f418_images_____-8d838a16-1975-4fbf-a0d1-836af13c5567.png" alt="남산타워 벚꽃 풍경" />
+        </div>
+      </article>
+      <article class="spot-card" id="card-yeouido" data-detail-url="yeouido-detail.html">
+        <h3>여의도</h3>
+        <p>윤중로 벚꽃길로 유명하며 축제 시즌에 가장 많은 방문객이 찾는 장소</p>
+        <div class="spot-card-media">
+          <img src="file:///C:/Users/user/.cursor/projects/c-cursor-Myprojects/assets/c__Users_user_AppData_Roaming_Cursor_User_workspaceStorage_cbc4cad9ca328f5721e588f24157f418_images____-6220e423-2bfb-4fff-8f33-192802bdacfd.png" alt="여의도 벚꽃길 풍경" />
+        </div>
+      </article>
+      <article class="spot-card" id="card-childrens-park" data-detail-url="childrens-park-detail.html">
+        <h3>어린이대공원</h3>
+        <p>넓은 공원 동선과 함께 봄꽃을 편하게 즐길 수 있는 가족 나들이 코스</p>
+        <div class="spot-card-media">
+          <img src="file:///C:/Users/user/.cursor/projects/c-cursor-Myprojects/assets/c__Users_user_AppData_Roaming_Cursor_User_workspaceStorage_cbc4cad9ca328f5721e588f24157f418_images____-c379e6ba-3ca7-42fd-8d02-f0a50fd6c78c.png" alt="어린이대공원 벚꽃 산책로" />
+        </div>
+      </article>
+      <article class="spot-card" id="card-seoul-forest" data-detail-url="seoul-forest-detail.html">
+        <h3>서울숲</h3>
+        <p>숲길과 강변이 연결되어 자연스러운 산책 동선으로 벚꽃 감상이 가능한 곳</p>
+        <div class="spot-card-media">
+          <img src="file:///C:/Users/user/.cursor/projects/c-cursor-Myprojects/assets/c__Users_user_AppData_Roaming_Cursor_User_workspaceStorage_cbc4cad9ca328f5721e588f24157f418_images_______-e7f7c012-31e4-4353-9f58-6756e1b5a921.png" alt="서울숲 벚꽃길 풍경" />
+        </div>
+      </article>
+      <article class="spot-card" id="card-seokchon" data-detail-url="seokchon-detail.html">
+        <h3>잠실 석촌호수</h3>
+        <p>호수를 따라 이어진 벚꽃길이 인상적인 서울 동남권의 인기 벚꽃 스팟</p>
+        <div class="spot-card-media">
+          <img src="file:///C:/Users/user/.cursor/projects/c-cursor-Myprojects/assets/c__Users_user_AppData_Roaming_Cursor_User_workspaceStorage_cbc4cad9ca328f5721e588f24157f418_images_______-f6140600-3607-4197-9279-1e0c7ebb13b3.png" alt="잠실 석촌호수 벚꽃 풍경" />
+        </div>
+      </article>
+    </section>
+  </div>
+
+  <script
+    src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""
+  ></script>
+  <script>
+    (function () {
+      const mapWrap = document.getElementById("mapWrap");
+      const petals = document.getElementById("petalLayer");
+      const spotCards = document.querySelectorAll(".spot-card[data-detail-url]");
+
+      const places = [
+        {
+          name: "경복궁",
+          lat: 37.579617,
+          lng: 126.977041,
+          cardId: "card-gyeongbokgung"
+        },
+        {
+          name: "남산타워",
+          lat: 37.551169,
+          lng: 126.988227,
+          cardId: "card-namsan"
+        },
+        {
+          name: "여의도",
+          lat: 37.5283,
+          lng: 126.9326,
+          cardId: "card-yeouido"
+        },
+        {
+          name: "어린이대공원",
+          lat: 37.5493,
+          lng: 127.0814,
+          cardId: "card-childrens-park"
+        },
+        {
+          name: "서울숲",
+          lat: 37.5444,
+          lng: 127.0374,
+          cardId: "card-seoul-forest"
+        },
+        {
+          name: "잠실 석촌호수",
+          lat: 37.5089,
+          lng: 127.1001,
+          cardId: "card-seokchon"
+        }
+      ];
+
+      const seoulMap = L.map("seoulRealMap", {
+        scrollWheelZoom: true
+      }).setView([37.545, 127.01], 12);
+
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution: '&copy; OpenStreetMap contributors'
+      }).addTo(seoulMap);
+
+      places.forEach((place) => {
+        const marker = L.marker([place.lat, place.lng]).addTo(seoulMap);
+        marker.bindPopup(`<p class="place-popup"><strong>${place.name}</strong><br/>벚꽃 명소 위치</p>`);
+        marker.on("click", () => {
+          const target = document.getElementById(place.cardId);
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
+      });
+
+      spotCards.forEach((card) => {
+        card.addEventListener("click", () => {
+          const url = card.getAttribute("data-detail-url");
+          if (url) {
+            window.location.href = url;
+          }
+        });
+      });
+
+      function isPointerNearMap(clientX, clientY) {
+        if (typeof clientX !== "number" || typeof clientY !== "number") {
+          return false;
+        }
+        const rect = mapWrap.getBoundingClientRect();
+        const margin = 120;
+        return (
+          clientX >= rect.left - margin &&
+          clientX <= rect.right + margin &&
+          clientY >= rect.top - margin &&
+          clientY <= rect.bottom + margin
+        );
+      }
+
+      function setMapActiveByPointer(clientX, clientY) {
+        mapWrap.classList.toggle("active", isPointerNearMap(clientX, clientY));
+      }
+
+      document.addEventListener("mousemove", (e) => {
+        setMapActiveByPointer(e.clientX, e.clientY);
+      });
+
+      mapWrap.addEventListener("mouseenter", () => {
+        mapWrap.classList.add("active");
+      });
+
+      mapWrap.addEventListener("mouseleave", (e) => {
+        setMapActiveByPointer(e.clientX, e.clientY);
+      });
+
+      window.addEventListener("mouseout", (e) => {
+        if (!e.relatedTarget) {
+          mapWrap.classList.remove("active");
+        }
+      });
+
+      document.addEventListener("touchstart", () => {
+        mapWrap.classList.add("active");
+      }, { passive: true });
+
+      const petalCount = 28;
+      for (let i = 0; i < petalCount; i += 1) {
+        const petal = document.createElement("span");
+        petal.className = "petal";
+        const size = 8 + Math.random() * 10;
+        const left = Math.random() * 100;
+        const drift = -140 + Math.random() * 280;
+        const duration = 7 + Math.random() * 8;
+        const delay = -(Math.random() * 12);
+        petal.style.left = left + "vw";
+        petal.style.setProperty("--size", size + "px");
+        petal.style.setProperty("--drift", drift + "px");
+        petal.style.setProperty("--dur", duration + "s");
+        petal.style.setProperty("--delay", delay + "s");
+        petals.appendChild(petal);
+      }
+    })();
+  </script>
+</body>
+</html>

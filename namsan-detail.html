@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>남산타워 벚꽃 상세정보</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "Noto Sans KR", "Noto Sans Korean", "Apple SD Gothic Neo", "Malgun Gothic", sans-serif;
+      background: linear-gradient(170deg, #fff3fa 0%, #ffe6f2 100%);
+      color: #5e2e49;
+      min-height: 100vh;
+      padding: 24px 14px 36px;
+    }
+    .container {
+      width: min(860px, 96vw);
+      margin: 0 auto;
+      background: rgba(255, 255, 255, 0.86);
+      border: 1px solid rgba(220, 104, 161, 0.32);
+      border-radius: 18px;
+      overflow: hidden;
+      box-shadow: 0 14px 30px rgba(173, 80, 128, 0.16);
+    }
+    .hero {
+      width: 100%;
+      height: min(44vh, 360px);
+      object-fit: cover;
+      display: block;
+    }
+    .video-link-wrap { display: flex; justify-content: center; padding: 12px 0 2px; }
+    .video-link {
+      width: 46px;
+      height: 46px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      background: #ff0000;
+      color: #fff;
+      box-shadow: 0 8px 14px rgba(170, 35, 35, 0.25);
+      border: 2px solid #fff4fa;
+    }
+    .video-link svg { width: 21px; height: 21px; fill: currentColor; }
+    .info { padding: 20px; }
+    h1 { margin: 0 0 14px; font-size: clamp(1.5rem, 3vw, 2rem); color: #a93970; }
+    .detail-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+    .detail-item { border: 1px solid rgba(220,104,161,.28); border-radius: 12px; padding: 10px 12px; background: #fff8fc; }
+    .detail-item h2 { margin: 0 0 6px; font-size: 0.95rem; color: #9a3d67; }
+    .detail-item p { margin: 0; line-height: 1.6; font-size: 0.93rem; }
+    .full { grid-column: 1 / -1; }
+    .actions {
+      margin-top: 18px;
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    a.btn { text-decoration: none; font-size: 0.92rem; border-radius: 999px; padding: 8px 14px; border: 1px solid rgba(170, 71, 122, 0.3); color: #7c3559; background: #fff7fc; }
+    @media (max-width: 640px) { .detail-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <img
+      class="hero"
+      src="file:///C:/Users/user/.cursor/projects/c-cursor-Myprojects/assets/c__Users_user_AppData_Roaming_Cursor_User_workspaceStorage_cbc4cad9ca328f5721e588f24157f418_images_____-8d838a16-1975-4fbf-a0d1-836af13c5567.png"
+      alt="남산타워 벚꽃 사진"
+    />
+    <div class="video-link-wrap">
+      <a class="video-link" href="https://www.youtube.com/shorts/wZIXX7moQBk" target="_blank" rel="noopener noreferrer" aria-label="남산타워 유튜브 영상 보기">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 7.2a3.01 3.01 0 0 0-2.1-2.1C19.5 4.6 12 4.6 12 4.6s-7.5 0-9.4.5A3.01 3.01 0 0 0 .5 7.2 31.7 31.7 0 0 0 0 12a31.7 31.7 0 0 0 .5 4.8 3.01 3.01 0 0 0 2.1 2.1c1.9.5 9.4.5 9.4.5s7.5 0 9.4-.5a3.01 3.01 0 0 0 2.1-2.1A31.7 31.7 0 0 0 24 12a31.7 31.7 0 0 0-.5-4.8zM9.6 15.2V8.8l6.2 3.2-6.2 3.2z"/></svg>
+      </a>
+    </div>
+    <section class="info">
+      <h1>남산타워 벚꽃 명소 상세정보</h1>
+      <div class="detail-grid">
+        <article class="detail-item"><h2>기간</h2><p>2026년 3월 28일 ~ 4월 19일 (예상)</p></article>
+        <article class="detail-item"><h2>장소</h2><p>N서울타워 및 남산공원 둘레길 일대</p></article>
+        <article class="detail-item"><h2>주요 행사</h2><p>남산 와인페어, 블루밍 이벤트 등</p></article>
+        <article class="detail-item"><h2>벚꽃 특징</h2><p>남산도서관에서 타워로 이어지는 순환로가 긴 벚꽃 터널을 이룸.</p></article>
+        <article class="detail-item full"><h2>팁</h2><p>주차 공간이 매우 협소하여 대중교통(버스, 케이블카) 이용 권장.</p></article>
+      </div>
+      <div class="actions">
+        <a class="btn" href="index.html">메인 지도로 돌아가기</a>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
