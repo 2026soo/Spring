@@ -269,7 +269,7 @@
 
   <div class="page">
     <header class="title">
-      <h1>서울 벚꽃 명소 지도</h1>
+      <h1>서울의 봄: 서울 벚꽃 명소 BEST 6</h1>
       <p class="hint">경복궁 · 남산타워 · 여의도 · 어린이대공원 · 서울숲 · 잠실 석촌호수</p>
     </header>
 
@@ -283,42 +283,42 @@
     <section class="spot-list" aria-label="벚꽃 명소 안내 카드">
       <article class="spot-card" id="card-gyeongbokgung" data-detail-url="gyeongbokgung-detail.html">
         <h3>경복궁</h3>
-        <p>고궁의 고즈넉한 분위기와 벚꽃이 함께 어우러지는 서울 대표 명소</p>
+        <p>가지가 길게 늘어진 수양벚나무와 고풍스러운 전통 전각, 연못이 어우러져 한 폭의 동양화 같은 한국적인 우아함을 선사하는 장소</p>
         <div class="spot-card-media">
           <img src="assets/경복궁.jpg" alt="경복궁 벚꽃 풍경" />
         </div>
       </article>
       <article class="spot-card" id="card-namsan" data-detail-url="namsan-detail.html">
         <h3>남산타워</h3>
-        <p>남산 산책로를 따라 벚꽃을 즐기고 전망대에서 서울 전경까지 감상</p>
+        <p>남산 순환로의 꽃길을 걸어 올라가 도심 속 산 정상에서 서울 시내 전경과 분홍빛 봄 풍경을 한눈에 내려다볼 수 있는 장소</p>
         <div class="spot-card-media">
           <img src="assets/남산타워.jpg" alt="남산타워 벚꽃 풍경" />
         </div>
       </article>
       <article class="spot-card" id="card-yeouido" data-detail-url="yeouido-detail.html">
         <h3>여의도</h3>
-        <p>윤중로 벚꽃길로 유명하며 축제 시즌에 가장 많은 방문객이 찾는 장소</p>
+        <p>한강을 배경으로 수천 그루의 왕벚나무가 끝없이 이어진 거대한 꽃터널을 이루어 봄의 절정을 느끼며 축제를 즐기기 좋은 장소</p>
         <div class="spot-card-media">
           <img src="assets/여의도.png" alt="여의도 벚꽃길 풍경" />
         </div>
       </article>
       <article class="spot-card" id="card-childrens-park" data-detail-url="childrens-park-detail.html">
         <h3>어린이대공원</h3>
-        <p>넓은 공원 동선과 함께 봄꽃을 편하게 즐길 수 있는 가족 나들이 코스</p>
+        <p>벚나무들이 드넓은 잔디밭과 어우러져 가족, 연인들이 가볍게 산책하며 봄의 활기찬 기운을 만끽하기 좋은 장소</p>
         <div class="spot-card-media">
           <img src="assets/어린이대공원.jpg" alt="어린이대공원 벚꽃 산책로" />
         </div>
       </article>
       <article class="spot-card" id="card-seoul-forest" data-detail-url="seoul-forest-detail.html">
         <h3>서울숲</h3>
-        <p>숲길과 강변이 연결되어 자연스러운 산책 동선으로 벚꽃 감상이 가능한 곳</p>
+        <p>왕벚나무 터널 아래로 꽃비가 내리며 연못, 사슴 방사장 등 자연 친화적인 공간에서 감성적인 피크닉을 즐기기 좋은 장소</p>
         <div class="spot-card-media">
           <img src="assets/서울숲.jpg" alt="서울숲 벚꽃길 풍경" />
         </div>
       </article>
       <article class="spot-card" id="card-seokchon" data-detail-url="seokchon-detail.html">
         <h3>잠실 석촌호수</h3>
-        <p>호수를 따라 이어진 벚꽃길이 인상적인 서울 동남권의 인기 벚꽃 스팟</p>
+        <p>호수 둘레를 따라 끝없이 이어진 벚꽃 터널과 롯데월드의 동화 같은 성, 초고층 타워가 어우러져 화려하고 이국적인 야경을 선사하는 장소</p>
         <div class="spot-card-media">
           <img src="assets/잠실석촌호수.jpg" alt="잠실 석촌호수 벚꽃 풍경" />
         </div>
@@ -386,9 +386,10 @@
         scrollWheelZoom: true
       }).setView([37.545, 127.01], 12);
 
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 19,
-        attribution: '&copy; OpenStreetMap contributors'
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
+        subdomains: "abcd",
+        maxZoom: 20,
+        attribution: '&copy; OpenStreetMap contributors &copy; CARTO'
       }).addTo(seoulMap);
 
       places.forEach((place) => {
